@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Resultados da Pesquisa{% endblock %}
+
+{% block content %}
+    <h1>Resultados da Pesquisa</h1>
+    {% if query %}
+        <p>Resultados para "{{ query }}":</p>
+        {% if results %}
+            <ul>
+            {% for product in results %}
+                <li>
+                    <h2>{{ product.name }}</h2>
+                    <p>{{ product.description }}</p>
+                    <p>Preço: R$ {{ product.price }}</p>
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>Nenhum resultado encontrado.</p>
+        {% endif %}
+    {% else %}
+        <p>Por favor, insira um termo de pesquisa.</p>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}Registro - The Closet{% endblock %}
+
+{% block content %}
+<div class="register-page">
+    <div class="register-container">
+        <h2 class="register-title">Crie sua conta</h2>
+        
+        {% if messages %}
+            <div class="register-messages">
+                {% for message in messages %}
+                    <div class="register-message register-message-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <form method="post" class="register-form">
+            {% csrf_token %}
+            <div class="register-form-field">
+                <label for="{{ form.username.id_for_label }}" class="register-label">Nome de usuário</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                    {% for error in form.username.errors %}
+                        <p class="register-field-error">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+                <p class="register-field-help">Máx. 150 caracteres. Letras, dígitos e @/./+/-/_ apenas.</p>
+            </div>
+            <div class="register-form-field">
+                <label for="{{ form.password1.id_for_label }}" class="register-label">Senha</label>
+                {{ form.password1 }}
+                {% if form.password1.errors %}
+                    {% for error in form.password1.errors %}
+                        <p class="register-field-error">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+                <p class="register-field-help">Mín. 8 caracteres, sem sequências comuns e totalmente numéricas.</p>
+            </div>
+            <div class="register-form-field">
+                <label for="{{ form.password2.id_for_label }}" class="register-label">Confirmação de senha</label>
+                {{ form.password2 }}
+                {% if form.password2.errors %}
+                    {% for error in form.password2.errors %}
+                        <p class="register-field-error">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+                <p class="register-field-help">Digite a mesma senha para verificação.</p>
+            </div>
+            <div class="register-show-password">
+                <input type="checkbox" id="show_password" class="register-checkbox">
+                <label for="show_password" class="register-checkbox-label">Mostrar senha</label>
+            </div>
+            <div class="register-submit">
+                <button type="submit" class="register-button">
+                    Criar Conta
+                </button>
+            </div>
+        </form>
+        <p class="register-login-prompt">Já tem uma conta? <a href="{% url 'login' %}" class="register-link">Faça login</a></p>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    var fields = ['id_username', 'id_password1', 'id_password2'];
+    var commonClasses = 'register-input';
+    
+    fields.forEach(function(fieldId) {
+        var field = document.getElementById(fieldId);
+        if (field) {
+            field.className = commonClasses;
+        }
+    });
+});
+
+document.getElementById('show_password').addEventListener('change', function() {
+    var password1 = document.getElementById('id_password1');
+    var password2 = document.getElementById('id_password2');
+    var type = this.checked ? 'text' : 'password';
+    password1.type = type;
+    password2.type = type;
+});
+
+</script>
+{% endblock %}

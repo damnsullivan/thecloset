@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} - The Closet{% endblock %}
+
+{% block content %}
+<div class="prod-detail-page">
+    <div class="prod-detail-container">
+        <div class="prod-detail-main">
+            <div class="prod-detail-gallery">
+                {% if product.image %}
+                    <img src="{{ product.get_image_url }}" alt="Imagem de {{ product.name }}" class="prod-detail-image">
+                {% else %}
+                    <img src="{% static 'images/no-image.jpg' %}" alt="Imagem não disponível" class="prod-detail-image">
+                {% endif %}
+                <span class="prod-detail-category">{{ product.category.name }}</span>
+            </div>
+            
+            <div class="prod-detail-info">
+                <h1 class="prod-detail-title">{{ product.name }}</h1>
+                <p class="prod-detail-price">R$ {{ product.price|floatformat:2 }}</p>
+                <p class="prod-detail-description">{{ product.description|linebreaks }}</p>
+                
+                <div class="prod-detail-rating">
+                    <div class="prod-detail-stars">
+                        {% for i in "12345" %}
+                            <span class="prod-detail-star {% if forloop.counter <= product.rating %}filled{% endif %}">★</span>
+                        {% endfor %}
+                    </div>
+                    <span class="prod-detail-rating-count">({{ product.num_reviews|default:"0" }} avaliações)</span>
+                </div>
+                
+                <p class="prod-detail-availability">
+                    {% if product.is_available %}
+                        <span class="prod-detail-in-stock">Disponível</span>
+                    {% else %}
+                        <span class="prod-detail-out-of-stock">Indisponível</span>
+                    {% endif %}
+                </p>
+                
+                {% if product.is_available %}
+                    <form action="{% url 'add_to_cart' product.slug %}" method="post" class="prod-detail-form">
+                        {% csrf_token %}
+                        <div class="prod-detail-quantity">
+                            <label for="quantity">Quantidade:</label>
+                            <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{ product.stock }}" required>
+                        </div>
+                        <button type="submit" class="prod-detail-button">
+                            Adicionar ao Carrinho
+                        </button>
+                    </form>
+                {% else %}
+                    <p class="prod-detail-out-of-stock-message">Este produto está temporariamente indisponível.</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="prod-detail-additional">
+            <h2 class="prod-detail-additional-title">Detalhes do Produto</h2>
+            <div class="prod-detail-grid">
+                <div class="prod-detail-characteristics">
+                    <h3>Características:</h3>
+                    <ul>
+                        <li>Marca: {{ product.brand|default:"Não especificada" }}</li>
+                        <li>Cor: {{ product.get_color_display }}</li>
+                        <li>Tamanho: {{ product.get_size_display }}</li>
+                        {% if product.material %}
+                            <li>Material: {{ product.material }}</li>
+                        {% endif %}
+                    </ul>
+                </div>
+                {% if product.care_instructions %}
+                    <div class="prod-detail-care">
+                        <h3>Cuidados:</h3>
+                        <p>{{ product.care_instructions|linebreaks }}</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if related_products %}
+            <div class="prod-detail-related">
+                <h2 class="prod-detail-related-title">Produtos Relacionados</h2>
+                <div class="prod-detail-related-grid">
+                    {% for related_product in related_products %}
+                        <div class="prod-detail-related-item">
+                            <a href="{% url 'product_detail' related_product.slug %}">
+                                <img src="{{ related_product.get_image_url }}" alt="{{ related_product.name }}" class="prod-detail-related-image">
+                                <h3 class="prod-detail-related-name">{{ related_product.name }}</h3>
+                                <p class="prod-detail-related-price">R$ {{ related_product.price|floatformat:2 }}</p>
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

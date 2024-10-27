@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - The Closet{% endblock %}
+
+{% block content %}
+<div class="login-page">
+    <div class="login-container">
+        <div class="login-header">
+            <h2 class="login-title">The Closet</h2>
+            <p class="login-subtitle">Entre para acessar sua conta</p>
+        </div>
+        <div class="login-form-container">
+            {% if form.non_field_errors %}
+                <div class="login-error">
+                    <div class="login-error-icon">
+                        <!-- SVG icon here -->
+                    </div>
+                    <div class="login-error-message">
+                        {% for error in form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+            
+            <form method="post" class="login-form">
+                {% csrf_token %}
+                <div class="login-form-fields">
+                    <div class="login-form-field">
+                        <label for="{{ form.username.id_for_label }}" class="login-label">Usuário</label>
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                            <p class="login-field-error">{{ form.username.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="login-form-field">
+                        <label for="{{ form.password.id_for_label }}" class="login-label">Senha</label>
+                        {{ form.password }}
+                        {% if form.password.errors %}
+                            <p class="login-field-error">{{ form.password.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="login-options">
+                    <div class="login-show-password">
+                        <input type="checkbox" id="show_password" class="login-checkbox">
+                        <label for="show_password" class="login-checkbox-label">
+                            Mostrar senha
+                        </label>
+                    </div>
+                </div>
+
+                <div class="login-forgot-password">
+                    <a href="{% url 'password_reset' %}" class="login-link">
+                        Esqueceu a senha?
+                    </a>
+                </div>
+
+                <div class="login-submit">
+                    <button type="submit" class="login-button">
+                        Entrar
+                    </button>
+                </div>
+            </form>
+        </div>
+        <p class="login-register-prompt">
+            Não tem uma conta?
+            <a href="{% url 'register' %}" class="login-link">
+                Registre-se
+            </a>
+        </p>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var fields = ['id_username', 'id_password'];
+        var commonClasses = 'appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-black focus:border-black focus:z-10 sm:text-sm';
+        
+        fields.forEach(function(fieldId, index) {
+            var field = document.getElementById(fieldId);
+            if (field) {
+                field.className = commonClasses;
+                if (index === 0) {
+                    field.classList.add('rounded-t-md');
+                    field.placeholder = 'Usuário';
+                }
+                if (index === fields.length - 1) {
+                    field.classList.add('rounded-b-md');
+                    field.placeholder = 'Senha';
+                }
+            }
+        });
+    });
+
+    document.getElementById('show_password').addEventListener('change', function() {
+        var password = document.getElementById('id_password');
+        password.type = this.checked ? 'text' : 'password';
+    });
+</script>
+{% endblock %}

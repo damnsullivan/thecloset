@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}Coleção Exclusiva - The Closet{% endblock %}
+
+{% block content %}
+<div class="collection-page">
+    <div class="collection-container">
+        <h2 class="collection-title">Nossa coleção exclusiva</h2>
+        
+        <div class="collection-layout">
+            <!-- Sidebar de Filtros -->
+            <aside class="filter-sidebar">
+                <div class="filter-container">
+                    <h3 class="filter-title">Refinar busca</h3>
+                    <form method="get" action="" class="filter-form">
+                        <div class="filter-group">
+                            <label for="category">Categoria</label>
+                            <select id="category" name="category">
+                                <option value="">Todas as Categorias</option>
+                                {% for category in categories %}
+                                    <option value="{{ category.slug }}" {% if category.slug == selected_category %}selected{% endif %}>{{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="gender">Gênero</label>
+                            <select id="gender" name="gender">
+                                <option value="">Todos os Gêneros</option>
+                                <option value="M" {% if current_gender == 'M' %}selected{% endif %}>Masculino</option>
+                                <option value="F" {% if current_gender == 'F' %}selected{% endif %}>Feminino</option>
+                                <option value="U" {% if current_gender == 'U' %}selected{% endif %}>Unissex</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="price">Faixa de Preço</label>
+                            <div class="price-inputs">
+                                <input type="number" id="price_min" name="price_min" value="{{ current_price_min }}" placeholder="Preço Mín">
+                                <input type="number" id="price_max" name="price_max" value="{{ current_price_max }}" placeholder="Preço Máx">                                
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label for="rating">Avaliação Mínima</label>
+                            <select id="rating" name="rating">
+                                <option value="">Qualquer Avaliação</option>
+                                <option value="5" {% if current_rating == '5' %}selected{% endif %}>5 estrelas</option>
+                                <option value="4" {% if current_rating == '4' %}selected{% endif %}>4 estrelas ou mais</option>
+                                <option value="3" {% if current_rating == '3' %}selected{% endif %}>3 estrelas ou mais</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="filter-button">Aplicar Filtros</button>
+                    </form>
+                </div>
+            </aside>
+
+            <!-- Lista de Produtos -->
+            <section class="product-list">
+                <div class="product-grid">
+                    {% for product in products %}
+                        <div class="product-card">
+                            <div class="product-image-container">
+                                <img src="{{ product.image.url }}" alt="Imagem de {{ product.name }}" class="product-image">
+                                <div class="product-price">
+                                    R$ {{ product.price|floatformat:2 }}
+                                </div>
+                            </div>
+                            <div class="product-details">
+                                <h3 class="product-name">{{ product.name }}</h3>
+                                <p class="product-description">{{ product.description|truncatechars:100 }}</p>
+                                <div class="product-footer">
+                                    <div class="product-rating">
+                                        <span class="star-icon">★</span>
+                                        <span class="rating-value">{{ product.rating }}</span>
+                                    </div>
+                                    <a href="{% url 'product_detail' product.slug %}" class="product-link">
+                                        Ver detalhes →
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <p class="no-products">Nenhum produto disponível no momento.</p>
+                    {% endfor %}
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}

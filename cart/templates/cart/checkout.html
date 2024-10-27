@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout - The Closet{% endblock %}
+
+{% block content %}
+<div class="checkout-page">
+    <h2 class="checkout-title">Finalizar Compra</h2>
+
+    <form method="post" class="checkout-form">
+        {% csrf_token %}
+
+        <!-- Endereço de Entrega -->
+        <section class="checkout-section checkout-address">
+            <h3 class="checkout-section-title">Endereço de Entrega</h3>
+            <div class="checkout-address-fields">
+                <div class="checkout-address-cep">
+                    <input type="text" id="cep" name="cep" placeholder="CEP" class="checkout-input checkout-input-cep" required>
+                    <button type="button" id="search-cep" class="checkout-button checkout-button-secondary">Buscar CEP</button>
+                </div>
+                <input type="text" id="address" name="address" placeholder="Endereço" class="checkout-input" required>
+                <div class="checkout-address-number-complement">
+                    <input type="text" id="number" name="number" placeholder="Número" class="checkout-input checkout-input-number" required>
+                    <input type="text" id="complement" name="complement" placeholder="Complemento (opcional)" class="checkout-input checkout-input-complement">
+                </div>
+                <input type="text" id="city" name="city" placeholder="Cidade" class="checkout-input" required>
+                <input type="text" id="state" name="state" placeholder="Estado" class="checkout-input" required>
+                <p class="checkout-required-fields">* Campos obrigatórios</p>
+                <button type="button" class="checkout-button checkout-button-secondary">Usar Endereço Salvo</button>
+            </div>
+        </section>
+
+        <!-- Formas de Pagamento -->
+        <section class="checkout-section checkout-payment">
+            <h3 class="checkout-section-title">Formas de Pagamento</h3>
+            <div class="checkout-payment-options">
+                <div class="checkout-payment-option">
+                    <input type="radio" id="pix" name="payment_method" value="pix" class="checkout-radio" required>
+                    <label for="pix" class="checkout-label">PIX</label>
+                </div>
+                <div class="checkout-payment-option">
+                    <input type="radio" id="boleto" name="payment_method" value="boleto" class="checkout-radio">
+                    <label for="boleto" class="checkout-label">Boleto Bancário</label>
+                </div>
+                <div class="checkout-payment-option">
+                    <input type="radio" id="credit" name="payment_method" value="credit" class="checkout-radio" onclick="showInstallments()">
+                    <label for="credit" class="checkout-label">Cartão de Crédito (em até 6x sem juros)</label>
+                </div>
+                <div id="installments-section" class="checkout-installments hidden">
+                    <label for="installments" class="checkout-label">Parcelas</label>
+                    <select id="installments" name="installments" class="checkout-select">
+                        <!-- Parcelas serão preenchidas dinamicamente -->
+                    </select>
+                </div>
+                <div class="checkout-payment-option">
+                    <input type="radio" id="debit" name="payment_method" value="debit" class="checkout-radio">
+                    <label for="debit" class="checkout-label">Cartão de Débito</label>
+                </div>
+            </div>
+        </section>
+
+        <!-- Resumo do Pedido -->
+        <section class="checkout-section checkout-summary">
+            <h3 class="checkout-section-title">Resumo do Pedido</h3>
+            <ul class="checkout-summary-list">
+                {% for item in cart_items %}
+                    <li class="checkout-summary-item">
+                        <span>{{ item.product.name }} - Quantidade: {{ item.quantity }}</span>
+                        <span class="checkout-summary-price">R$ {{ item.total_price }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+            <div class="checkout-total">
+                <span class="checkout-total-label">Total:</span>
+                <span class="checkout-total-price">R$ {{ total }}</span>
+            </div>
+        </section>
+
+        <!-- Botão Finalizar Compra -->
+        <div class="checkout-submit">
+            <button type="submit" class="checkout-button checkout-button-primary">
+                Finalizar Compra
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- API de Busca de CEP -->
+<script>
+    document.getElementById('search-cep').addEventListener('click', function() {
+        const cep = document.getElementById('cep').value;
+        if (cep.length === 8) {
+            fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.erro) {
+                        document.getElementById('address').value = data.logradouro;
+                        document.getElementById('city').value = data.localidade;
+                        document.getElementById('state').value = data.uf;
+                    } else {
+                        alert('CEP inválido.');
+                    }
+                })
+                .catch(() => alert('Erro ao buscar CEP.'));
+        } else {
+            alert('CEP deve ter 8 dígitos.');
+        }
+    });
+
+    function showInstallments() {
+        // Obtemos o valor de total como string e removemos a formatação de moeda
+        const totalString = "{{ total }}"; // Retorne como string
+        const total = parseFloat(totalString.replace(",", ".").replace("R$", "").trim()); // Converte para número
+
+        const installmentsSection = document.getElementById('installments-section');
+        const installmentsSelect = document.getElementById('installments');
+        installmentsSelect.innerHTML = ''; // Limpa as opções
+
+        // Adiciona as opções de parcelas
+        for (let i = 1; i <= 6; i++) {
+            const installmentValue = (total / i).toFixed(2);
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = `${i}x de R$ ${installmentValue.replace(".", ",")} sem juros`; // Formata como moeda
+            installmentsSelect.appendChild(option);
+        }
+
+        installmentsSection.classList.remove('hidden'); // Exibe a seção de parcelas
+    }
+
+</script>
+{% endblock %}

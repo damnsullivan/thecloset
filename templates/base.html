@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}The Closet{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet">
+</head>
+<body class="tc-body-layout">
+
+    <!-- Header -->
+    <header class="tc-header">
+        <nav class="tc-nav-bar" aria-label="Main Navigation">
+            <a href="{% url 'home' %}" class="tc-logo" aria-label="The Closet Home">THE CLOSET</a>
+            <div class="tc-nav-items">
+                <form action="{% url 'search_results' %}" method="get" class="tc-search-form">
+                    <input type="text" name="q" placeholder="Pesquisar..." class="tc-search-input">
+                </form>
+                <ul class="tc-nav-links">
+                    <li><a href="{% url 'home' %}" class="tc-nav-link">HOME</a></li>
+                    <li><a href="{% url 'product_list' %}" class="tc-nav-link">PRODUTOS</a></li>
+                    <li><a href="{% url 'view_cart' %}" class="tc-nav-link">CARRINHO</a></li>
+                    {% if user.is_authenticated %}
+                    <li>
+                        <form action="{% url 'logout' %}" method="post" class="tc-logout-form">
+                            {% csrf_token %}
+                            <button type="submit" class="tc-logout-button">LOGOUT</button>
+                        </form>
+                    </li>
+                    {% else %}
+                    <li><a href="{% url 'login' %}" class="tc-nav-link">LOGIN</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="tc-main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="tc-footer">
+        <div class="tc-footer-container">
+            <div class="tc-footer-section">
+                <h3 class="tc-footer-title">The Closet</h3>
+                <p class="tc-footer-text">Seu estilo, nossa paixão</p>
+            </div>
+            <div class="tc-footer-section">
+                <h4 class="tc-footer-subtitle">Links Rápidos</h4>
+                <ul class="tc-footer-links">
+                    <li><a href="{% url 'home' %}" class="tc-footer-link">Home</a></li>
+                    <li><a href="{% url 'product_list' %}" class="tc-footer-link">Produtos</a></li>
+                    <li><a href="{% url 'view_cart' %}" class="tc-footer-link">Carrinho</a></li>
+                </ul>
+            </div>
+            <div class="tc-footer-section">
+                <h4 class="tc-footer-subtitle">Contato</h4>
+                <p class="tc-footer-text">Email: contato@thecloset.com</p>
+                <p class="tc-footer-text">Telefone: (11) 1234-5678</p>
+            </div>
+        </div>
+        <div class="tc-footer-bottom">
+            <p class="tc-footer-copyright">&copy; 2024 The Closet. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+</body>
+</html>
