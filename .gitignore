@@ -1,0 +1,14 @@
+# Ambiente Virtual
+venv/
+.env
+
+# Dependências
+__pycache__/
+*.pyc
+
+# Configurações do Sistema
+.DS_Store
+Thumbs.db
+
+# Configurações do VS Code
+.vscode/
