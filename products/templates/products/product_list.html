@@ -2,6 +2,144 @@
 
 {% block title %}Coleção Exclusiva - The Closet{% endblock %}
 
+{% block extra_css %}
+<style>
+    .collection-layout {
+        display: flex;
+        gap: 20px;
+    }
+
+    .filter-sidebar {
+        flex: 0 0 250px;
+    }
+
+    .product-list {
+        flex: 1;
+    }
+
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+    }
+
+    .product-card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        background-color: #fff;
+    }
+
+    .product-image-container {
+        position: relative;
+        padding-top: 100%; /* 1:1 Aspect Ratio */
+    }
+
+    .product-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .product-price {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+    }
+
+    .product-details {
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
+    .product-name {
+        margin-bottom: 10px;
+        font-size: 1rem;
+        font-weight: bold;
+    }
+
+    .product-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: auto;
+    }
+
+    .product-rating {
+        display: flex;
+        align-items: center;
+    }
+
+    .star-icon {
+        color: gold;
+        margin-right: 5px;
+    }
+
+    .product-link {
+        text-decoration: none;
+        color: #007bff;
+        font-size: 0.9rem;
+    }
+
+    .pagination {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .pagination-link {
+        padding: 5px 10px;
+        border: 1px solid #ddd;
+        text-decoration: none;
+        color: #333;
+    }
+
+    .pagination-link.active {
+        background-color: #007bff;
+        color: white;
+    }
+
+    @media (max-width: 1200px) {
+        .product-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @media (max-width: 900px) {
+        .product-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 600px) {
+        .collection-layout {
+            flex-direction: column;
+        }
+
+        .filter-sidebar {
+            width: 100%;
+        }
+
+        .product-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="collection-page">
     <div class="collection-container">
@@ -33,9 +171,13 @@
                         </div>
                         <div class="filter-group">
                             <label for="price">Faixa de Preço</label>
-                            <div class="price-inputs">
-                                <input type="number" id="price_min" name="price_min" value="{{ current_price_min }}" placeholder="Preço Mín">
-                                <input type="number" id="price_max" name="price_max" value="{{ current_price_max }}" placeholder="Preço Máx">                                
+                            <div class="price-slider">
+                                <input type="range" id="price_min" name="price_min" min="0" max="1000" step="10" value="{{ current_price_min|default:0 }}">
+                                <input type="range" id="price_max" name="price_max" min="0" max="1000" step="10" value="{{ current_price_max|default:1000 }}">
+                            </div>
+                            <div class="price-values">
+                                <span id="price_min_value">R$ {{ current_price_min|default:0 }}</span>
+                                <span id="price_max_value">R$ {{ current_price_max|default:1000 }}</span>
                             </div>
                         </div>
                         <div class="filter-group">
@@ -65,14 +207,13 @@
                             </div>
                             <div class="product-details">
                                 <h3 class="product-name">{{ product.name }}</h3>
-                                <p class="product-description">{{ product.description|truncatechars:100 }}</p>
                                 <div class="product-footer">
                                     <div class="product-rating">
                                         <span class="star-icon">★</span>
                                         <span class="rating-value">{{ product.rating }}</span>
                                     </div>
                                     <a href="{% url 'product_detail' product.slug %}" class="product-link">
-                                        Ver detalhes →
+                                        Ver detalhes
                                     </a>
                                 </div>
                             </div>
@@ -81,8 +222,95 @@
                         <p class="no-products">Nenhum produto disponível no momento.</p>
                     {% endfor %}
                 </div>
+
+                <!-- Paginação -->
+                {% if products.has_other_pages %}
+                    <div class="pagination">
+                        {% if products.has_previous %}
+                            <a href="?page={{ products.previous_page_number }}&{{ request.GET.urlencode }}" class="pagination-link">&laquo; Anterior</a>
+                        {% endif %}
+
+                        {% for num in products.paginator.page_range %}
+                            {% if products.number == num %}
+                                <span class="pagination-link active">{{ num }}</span>
+                            {% elif num > products.number|add:'-3' and num < products.number|add:'3' %}
+                                <a href="?page={{ num }}&{{ request.GET.urlencode }}" class="pagination-link">{{ num }}</a>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if products.has_next %}
+                            <a href="?page={{ products.next_page_number }}&{{ request.GET.urlencode }}" class="pagination-link">Próxima &raquo;</a>
+                        {% endif %}
+                    </div>
+                {% endif %}
             </section>
         </div>
     </div>
 </div>
+<style>
+    .price-slider {
+        position: relative;
+        width: 100%;
+        height: 50px;
+    }
+
+    .price-slider input[type="range"] {
+        -webkit-appearance: none;
+        width: 100%;
+        background: transparent;
+        position: absolute;
+        left: 0;
+    }
+
+    .price-slider input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        background: #000;
+        cursor: pointer;
+        margin-top: -8px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .price-slider input[type="range"]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 5px;
+        background: #ddd;
+        border-radius: 3px;
+    }
+
+    .price-values {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+        font-size: 14px;
+    }
+</style>
+
+<script>
+    const priceMin = document.getElementById('price_min');
+    const priceMax = document.getElementById('price_max');
+    const priceMinValue = document.getElementById('price_min_value');
+    const priceMaxValue = document.getElementById('price_max_value');
+
+    function updatePriceValues() {
+        priceMinValue.textContent = `R$ ${priceMin.value}`;
+        priceMaxValue.textContent = `R$ ${priceMax.value}`;
+
+        // Garante que o preço mínimo não seja maior que o máximo
+        if (parseInt(priceMin.value) > parseInt(priceMax.value)) {
+            priceMin.value = priceMax.value;
+            priceMinValue.textContent = `R$ ${priceMin.value}`;
+        }
+    }
+
+    priceMin.addEventListener('input', updatePriceValues);
+    priceMax.addEventListener('input', updatePriceValues);
+
+    // Inicializa os valores
+    updatePriceValues();
+</script>
+
 {% endblock %}

@@ -1,117 +1,185 @@
-{% extends 'base.html' %}
-
-{% block title %}Checkout - The Closet{% endblock %}
-
+{% extends 'base.html' %} {% block title %}Checkout - The Closet{% endblock %}
 {% block content %}
 <div class="checkout-page">
-    <h2 class="checkout-title">Finalizar Compra</h2>
+  <h2 class="checkout-title">Finalizar Compra</h2>
 
-    <form method="post" class="checkout-form">
-        {% csrf_token %}
+  <form method="post" class="checkout-form">
+    {% csrf_token %}
 
-        <!-- Endereço de Entrega -->
-        <section class="checkout-section checkout-address">
-            <h3 class="checkout-section-title">Endereço de Entrega</h3>
-            <div class="checkout-address-fields">
-                <div class="checkout-address-cep">
-                    <input type="text" id="cep" name="cep" placeholder="CEP" class="checkout-input checkout-input-cep" required>
-                    <button type="button" id="search-cep" class="checkout-button checkout-button-secondary">Buscar CEP</button>
-                </div>
-                <input type="text" id="address" name="address" placeholder="Endereço" class="checkout-input" required>
-                <div class="checkout-address-number-complement">
-                    <input type="text" id="number" name="number" placeholder="Número" class="checkout-input checkout-input-number" required>
-                    <input type="text" id="complement" name="complement" placeholder="Complemento (opcional)" class="checkout-input checkout-input-complement">
-                </div>
-                <input type="text" id="city" name="city" placeholder="Cidade" class="checkout-input" required>
-                <input type="text" id="state" name="state" placeholder="Estado" class="checkout-input" required>
-                <p class="checkout-required-fields">* Campos obrigatórios</p>
-                <button type="button" class="checkout-button checkout-button-secondary">Usar Endereço Salvo</button>
-            </div>
-        </section>
-
-        <!-- Formas de Pagamento -->
-        <section class="checkout-section checkout-payment">
-            <h3 class="checkout-section-title">Formas de Pagamento</h3>
-            <div class="checkout-payment-options">
-                <div class="checkout-payment-option">
-                    <input type="radio" id="pix" name="payment_method" value="pix" class="checkout-radio" required>
-                    <label for="pix" class="checkout-label">PIX</label>
-                </div>
-                <div class="checkout-payment-option">
-                    <input type="radio" id="boleto" name="payment_method" value="boleto" class="checkout-radio">
-                    <label for="boleto" class="checkout-label">Boleto Bancário</label>
-                </div>
-                <div class="checkout-payment-option">
-                    <input type="radio" id="credit" name="payment_method" value="credit" class="checkout-radio" onclick="showInstallments()">
-                    <label for="credit" class="checkout-label">Cartão de Crédito (em até 6x sem juros)</label>
-                </div>
-                <div id="installments-section" class="checkout-installments hidden">
-                    <label for="installments" class="checkout-label">Parcelas</label>
-                    <select id="installments" name="installments" class="checkout-select">
-                        <!-- Parcelas serão preenchidas dinamicamente -->
-                    </select>
-                </div>
-                <div class="checkout-payment-option">
-                    <input type="radio" id="debit" name="payment_method" value="debit" class="checkout-radio">
-                    <label for="debit" class="checkout-label">Cartão de Débito</label>
-                </div>
-            </div>
-        </section>
-
-        <!-- Resumo do Pedido -->
-        <section class="checkout-section checkout-summary">
-            <h3 class="checkout-section-title">Resumo do Pedido</h3>
-            <ul class="checkout-summary-list">
-                {% for item in cart_items %}
-                    <li class="checkout-summary-item">
-                        <span>{{ item.product.name }} - Quantidade: {{ item.quantity }}</span>
-                        <span class="checkout-summary-price">R$ {{ item.total_price }}</span>
-                    </li>
-                {% endfor %}
-            </ul>
-            <div class="checkout-total">
-                <span class="checkout-total-label">Total:</span>
-                <span class="checkout-total-price">R$ {{ total }}</span>
-            </div>
-        </section>
-
-        <!-- Botão Finalizar Compra -->
-        <div class="checkout-submit">
-            <button type="submit" class="checkout-button checkout-button-primary">
-                Finalizar Compra
-            </button>
+    <!-- Endereço de Entrega -->
+    <section class="checkout-section checkout-address">
+      <h3 class="checkout-section-title">Endereço de Entrega</h3>
+      <div class="checkout-address-fields">
+        <div class="checkout-address-cep">
+          <input
+            type="text"
+            id="cep"
+            name="cep"
+            placeholder="CEP"
+            class="checkout-input checkout-input-cep"
+            required
+          />
+          <button
+            type="button"
+            id="search-cep"
+            class="checkout-button checkout-button-secondary"
+          >
+            Buscar CEP
+          </button>
         </div>
-    </form>
+        <input
+          type="text"
+          id="address"
+          name="address"
+          placeholder="Endereço"
+          class="checkout-input"
+          required
+        />
+        <div class="checkout-address-number-complement">
+          <input
+            type="text"
+            id="number"
+            name="number"
+            placeholder="Número"
+            class="checkout-input checkout-input-number"
+            required
+          />
+          <input
+            type="text"
+            id="complement"
+            name="complement"
+            placeholder="Complemento (opcional)"
+            class="checkout-input checkout-input-complement"
+          />
+        </div>
+        <input
+          type="text"
+          id="city"
+          name="city"
+          placeholder="Cidade"
+          class="checkout-input"
+          required
+        />
+        <input
+          type="text"
+          id="state"
+          name="state"
+          placeholder="Estado"
+          class="checkout-input"
+          required
+        />
+        <p class="checkout-required-fields">* Campos obrigatórios</p>
+        <button type="button" class="checkout-button checkout-button-secondary">
+          Usar Endereço Salvo
+        </button>
+      </div>
+    </section>
+
+    <!-- Formas de Pagamento -->
+    <section class="checkout-section checkout-payment">
+        <h3 class="checkout-section-title">Formas de Pagamento</h3>
+        <div class="checkout-payment-options">
+            <div class="checkout-payment-option">
+                <input type="radio" id="pix" name="payment_method" value="pix" class="checkout-radio" required>
+                <label for="pix" class="checkout-label">PIX</label>
+            </div>
+            <div class="checkout-payment-option">
+                <input type="radio" id="boleto" name="payment_method" value="boleto" class="checkout-radio">
+                <label for="boleto" class="checkout-label">Boleto Bancário</label>
+            </div>
+            <div class="checkout-payment-option">
+                <input type="radio" id="credit" name="payment_method" value="credit" class="checkout-radio" onclick="showCardFields('credit')">
+                <label for="credit" class="checkout-label">Cartão de Crédito (em até 6x sem juros)</label>
+            </div>
+            <div class="checkout-payment-option">
+                <input type="radio" id="debit" name="payment_method" value="debit" class="checkout-radio" onclick="showCardFields('debit')">
+                <label for="debit" class="checkout-label">Cartão de Débito</label>
+            </div>
+        </div>
+
+        <!-- Campos do Cartão (inicialmente ocultos) -->
+        <div id="card-fields" class="checkout-card-fields hidden">
+            <div class="checkout-form-group">
+                <label for="card-number" class="checkout-label">Número do Cartão</label>
+                <input type="text" id="card-number" name="card_number" class="checkout-input" placeholder="1234 5678 9012 3456" maxlength="19">
+            </div>
+            <div class="checkout-form-group">
+                <label for="card-name" class="checkout-label">Nome do Titular</label>
+                <input type="text" id="card-name" name="card_name" class="checkout-input" placeholder="Nome como está no cartão">
+            </div>
+            <div class="checkout-form-row">
+                <div class="checkout-form-group">
+                    <label for="card-expiry" class="checkout-label">Validade (MM/AA)</label>
+                    <input type="text" id="card-expiry" name="card_expiry" class="checkout-input" placeholder="MM/AA" maxlength="5">
+                </div>
+                <div class="checkout-form-group">
+                    <label for="card-cvv" class="checkout-label">CVV</label>
+                    <input type="text" id="card-cvv" name="card_cvv" class="checkout-input" placeholder="123" maxlength="4">
+                </div>
+            </div>
+            <div id="installments-section" class="checkout-installments hidden">
+                <label for="installments" class="checkout-label">Parcelas</label>
+                <select id="installments" name="installments" class="checkout-select">
+                    <!-- Parcelas serão preenchidas dinamicamente -->
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resumo do Pedido -->
+    <section class="checkout-section checkout-summary">
+      <h3 class="checkout-section-title">Resumo do Pedido</h3>
+      <ul class="checkout-summary-list">
+        {% for item in cart_items %}
+        <li class="checkout-summary-item">
+          <span>{{ item.product.name }} - Quantidade: {{ item.quantity }}</span>
+          <span class="checkout-summary-price"
+            >R$ {{ item.total_price|floatformat:2 }}</span
+          >
+        </li>
+        {% endfor %}
+      </ul>
+      <div class="checkout-total">
+        <span class="checkout-total-label">Total:</span>
+        <span class="checkout-total-price">R$ {{ total|floatformat:2 }}</span>
+      </div>
+    </section>
+
+    <!-- Botão Finalizar Compra -->
+    <div class="checkout-submit">
+      <button type="submit" class="checkout-button checkout-button-primary">
+        Finalizar Compra
+      </button>
+    </div>
+  </form>
 </div>
 
 <!-- API de Busca de CEP -->
 <script>
-    document.getElementById('search-cep').addEventListener('click', function() {
-        const cep = document.getElementById('cep').value;
-        if (cep.length === 8) {
-            fetch(`https://viacep.com.br/ws/${cep}/json/`)
-                .then(response => response.json())
-                .then(data => {
-                    if (!data.erro) {
-                        document.getElementById('address').value = data.logradouro;
-                        document.getElementById('city').value = data.localidade;
-                        document.getElementById('state').value = data.uf;
-                    } else {
-                        alert('CEP inválido.');
-                    }
-                })
-                .catch(() => alert('Erro ao buscar CEP.'));
-        } else {
-            alert('CEP deve ter 8 dígitos.');
-        }
-    });
+  document.getElementById("search-cep").addEventListener("click", function () {
+    const cep = document.getElementById("cep").value;
+    if (cep.length === 8) {
+      fetch(`https://viacep.com.br/ws/${cep}/json/`)
+        .then((response) => response.json())
+        .then((data) => {
+          if (!data.erro) {
+            document.getElementById("address").value = data.logradouro;
+            document.getElementById("city").value = data.localidade;
+            document.getElementById("state").value = data.uf;
+          } else {
+            alert("CEP inválido.");
+          }
+        })
+        .catch(() => alert("Erro ao buscar CEP."));
+    } else {
+      alert("CEP deve ter 8 dígitos.");
+    }
+  });
 
-    function showInstallments() {
-        // Obtemos o valor de total como string e removemos a formatação de moeda
-        const totalString = "{{ total }}"; // Retorne como string
-        const total = parseFloat(totalString.replace(",", ".").replace("R$", "").trim()); // Converte para número
+  function showInstallments() {
+        const totalString = "{{ total|floatformat:2 }}".replace(',', '.');
+        const total = parseFloat(totalString);
 
-        const installmentsSection = document.getElementById('installments-section');
         const installmentsSelect = document.getElementById('installments');
         installmentsSelect.innerHTML = ''; // Limpa as opções
 
@@ -120,12 +188,44 @@
             const installmentValue = (total / i).toFixed(2);
             const option = document.createElement('option');
             option.value = i;
-            option.textContent = `${i}x de R$ ${installmentValue.replace(".", ",")} sem juros`; // Formata como moeda
+            option.textContent = `${i}x de R$ ${installmentValue.replace('.', ',')} sem juros`;
             installmentsSelect.appendChild(option);
         }
-
-        installmentsSection.classList.remove('hidden'); // Exibe a seção de parcelas
     }
+
+  function showCardFields(paymentType) {
+        const cardFields = document.getElementById('card-fields');
+        const installmentsSection = document.getElementById('installments-section');
+        
+        cardFields.classList.remove('hidden');
+        
+        if (paymentType === 'credit') {
+            showInstallments();
+            installmentsSection.classList.remove('hidden');
+        } else {
+            installmentsSection.classList.add('hidden');
+        }
+    }
+
+    document.getElementById('card-number').addEventListener('input', function (e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > 16) value = value.slice(0, 16);
+        value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+        e.target.value = value;
+    });
+
+    document.getElementById('card-expiry').addEventListener('input', function (e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > 4) value = value.slice(0, 4);
+        if (value.length > 2) value = value.slice(0, 2) + '/' + value.slice(2);
+        e.target.value = value;
+    });
+
+       // Limitação do CVV para apenas números
+       document.getElementById('card-cvv').addEventListener('input', function (e) {
+        e.target.value = e.target.value.replace(/\D/g, '');
+    });
+
 
 </script>
 {% endblock %}

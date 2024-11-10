@@ -1,25 +1,202 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Resultados da Pesquisa{% endblock %}
+{% block title %}Resultados da Pesquisa - The Closet{% endblock %}
 
 {% block content %}
-    <h1>Resultados da Pesquisa</h1>
+<div class="search-results-container">
+    <div class="search-header">
+        <h1 class="search-title">Resultados da Pesquisa</h1>
+        {% if query %}
+            <p class="search-query">Resultados para "{{ query }}"</p>
+        {% endif %}
+    </div>
+
     {% if query %}
-        <p>Resultados para "{{ query }}":</p>
         {% if results %}
-            <ul>
-            {% for product in results %}
-                <li>
-                    <h2>{{ product.name }}</h2>
-                    <p>{{ product.description }}</p>
-                    <p>Preço: R$ {{ product.price }}</p>
-                </li>
-            {% endfor %}
-            </ul>
+            <div class="product-grid">
+                {% for product in results %}
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            {% if product.image %}
+                            <img src="{{ product.get_image_url }}" alt="Imagem de {{ product.name }}" class="product-image">
+                            {% else %}
+                            <img src="{% static 'images/no-image.jpg' %}" alt="Imagem não disponível" class="product-image">
+                            {% endif %}
+                            <div class="product-price">
+                                R$ {{ product.price|floatformat:2 }}
+                            </div>
+                        </div>
+                        <div class="product-details">
+                            <h3 class="product-name">{{ product.name }}</h3>
+                            <div class="product-footer">
+                                <div class="product-rating">
+                                    <span class="star-icon">★</span>
+                                    <span class="rating-value">{{ product.rating }}</span>
+                                </div>
+                                <a href="{% url 'product_detail' product.slug %}" class="product-link">
+                                    Ver detalhes
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
         {% else %}
-            <p>Nenhum resultado encontrado.</p>
+            <div class="no-results">
+                <p>Nenhum resultado encontrado para sua busca.</p>
+                <p>Tente usar palavras-chave diferentes ou verifique a ortografia.</p>
+            </div>
         {% endif %}
     {% else %}
-        <p>Por favor, insira um termo de pesquisa.</p>
+        <div class="no-query">
+            <p>Por favor, insira um termo de pesquisa.</p>
+        </div>
     {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .search-results-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .search-header {
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .search-title {
+        font-size: 2rem;
+        margin-bottom: 10px;
+        color: #333;
+    }
+
+    .search-query {
+        font-size: 1.1rem;
+        color: #666;
+    }
+
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+    }
+
+    .product-card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        background-color: #fff;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .product-image-container {
+        position: relative;
+        padding-top: 100%;
+    }
+
+    .product-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .product-price {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: rgba(0,0,0,0.7);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+    }
+
+    .product-details {
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
+    .product-name {
+        margin-bottom: 10px;
+        font-size: 1rem;
+        font-weight: bold;
+    }
+
+    .product-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: auto;
+    }
+
+    .product-rating {
+        display: flex;
+        align-items: center;
+    }
+
+    .star-icon {
+        color: gold;
+        margin-right: 5px;
+    }
+
+    .product-link {
+        text-decoration: none;
+        color: #007bff;
+        font-size: 0.9rem;
+    }
+
+    .no-results,
+    .no-query {
+        text-align: center;
+        padding: 40px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        margin-top: 20px;
+    }
+
+    .no-results p,
+    .no-query p {
+        color: #666;
+        margin-bottom: 10px;
+    }
+
+    @media (max-width: 1200px) {
+        .product-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @media (max-width: 900px) {
+        .product-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 600px) {
+        .product-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .search-title {
+            font-size: 1.5rem;
+        }
+    }
+</style>
 {% endblock %}

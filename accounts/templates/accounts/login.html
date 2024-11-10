@@ -10,15 +10,12 @@
             <p class="login-subtitle">Entre para acessar sua conta</p>
         </div>
         <div class="login-form-container">
-            {% if form.non_field_errors %}
+            {% if form.errors %}
                 <div class="login-error">
                     <div class="login-error-icon">
-                        <!-- SVG icon here -->
                     </div>
                     <div class="login-error-message">
-                        {% for error in form.non_field_errors %}
-                            <p>{{ error }}</p>
-                        {% endfor %}
+                        <p>Usuário ou senha incorretos. Por favor, tente novamente.</p>
                     </div>
                 </div>
             {% endif %}
@@ -27,18 +24,12 @@
                 {% csrf_token %}
                 <div class="login-form-fields">
                     <div class="login-form-field">
-                        <label for="{{ form.username.id_for_label }}" class="login-label">Usuário</label>
-                        {{ form.username }}
-                        {% if form.username.errors %}
-                            <p class="login-field-error">{{ form.username.errors.0 }}</p>
-                        {% endif %}
+                        <label for="id_username" class="login-label">Usuário</label>
+                        <input type="text" name="username" id="id_username" required class="login-input">
                     </div>
                     <div class="login-form-field">
-                        <label for="{{ form.password.id_for_label }}" class="login-label">Senha</label>
-                        {{ form.password }}
-                        {% if form.password.errors %}
-                            <p class="login-field-error">{{ form.password.errors.0 }}</p>
-                        {% endif %}
+                        <label for="id_password" class="login-label">Senha</label>
+                        <input type="password" name="password" id="id_password" required class="login-input">
                     </div>
                 </div>
 
@@ -76,20 +67,12 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var fields = ['id_username', 'id_password'];
-        var commonClasses = 'appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-black focus:border-black focus:z-10 sm:text-sm';
+        var commonClasses = 'login-input';
         
-        fields.forEach(function(fieldId, index) {
+        fields.forEach(function(fieldId) {
             var field = document.getElementById(fieldId);
             if (field) {
-                field.className = commonClasses;
-                if (index === 0) {
-                    field.classList.add('rounded-t-md');
-                    field.placeholder = 'Usuário';
-                }
-                if (index === fields.length - 1) {
-                    field.classList.add('rounded-b-md');
-                    field.placeholder = 'Senha';
-                }
+                field.className += ' ' + commonClasses;
             }
         });
     });

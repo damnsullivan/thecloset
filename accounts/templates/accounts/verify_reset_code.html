@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Verificar Código - The Closet{% endblock %}
+{% block content %}
+<h2>Verificar Código</h2>
+<form method="post">
+    {% csrf_token %}
+    <label for="verification_code">Código de Verificação:</label>
+    <input type="text" name="verification_code" id="verification_code" required>
+    <button type="submit">Verificar</button>
+</form>
+{% endblock %}

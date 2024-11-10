@@ -38,6 +38,10 @@ def add_to_cart(request, product_slug):
     if not created:
         cart_item.quantity += 1
         cart_item.save()
+    
+    # Atualizar a contagem do carrinho na sessão
+    request.session['cart_count'] = CartItem.objects.filter(user=request.user).aggregate(total=Sum('quantity'))['total'] or 0 if request.user.is_authenticated else CartItem.objects.filter(session_id=session_key).aggregate(total=Sum('quantity'))['total'] or 0
+    
     return redirect('view_cart')
 
 def remove_from_cart(request, item_id):
@@ -49,6 +53,10 @@ def remove_from_cart(request, item_id):
         session_key = request.session.session_key
         if cart_item.session_id == session_key:
             cart_item.delete()
+    
+    # Atualizar a contagem do carrinho na sessão
+    request.session['cart_count'] = CartItem.objects.filter(user=request.user).aggregate(total=Sum('quantity'))['total'] or 0 if request.user.is_authenticated else CartItem.objects.filter(session_id=session_key).aggregate(total=Sum('quantity'))['total'] or 0
+    
     return redirect('view_cart')
 
 def update_cart(request, item_id):
@@ -59,6 +67,14 @@ def update_cart(request, item_id):
         cart_item.save()
     else:
         cart_item.delete()
+    
+    # Atualizar a contagem do carrinho na sessão
+    if request.user.is_authenticated:
+        request.session['cart_count'] = CartItem.objects.filter(user=request.user).aggregate(total=Sum('quantity'))['total'] or 0
+    else:
+        session_key = request.session.session_key
+        request.session['cart_count'] = CartItem.objects.filter(session_id=session_key).aggregate(total=Sum('quantity'))['total'] or 0
+    
     return redirect('view_cart')
 
 @login_required
@@ -69,11 +85,9 @@ def checkout(request):
     )['total'] or 0
 
     if request.method == 'POST':
-        # Aqui você implementaria a lógica de processamento do pedido
-        # Por exemplo, criar um objeto Order, processar o pagamento, etc.
-        # Depois de processar o pedido com sucesso:
-        cart_items.delete()  # Limpa o carrinho
-        return redirect('order_confirmation')  # Redireciona para uma página de confirmação
+        cart_items.delete()  
+        request.session['cart_count'] = 0  
+        return redirect('order_confirmation')  
 
     context = {
         'cart_items': cart_items,

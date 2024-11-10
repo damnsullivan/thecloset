@@ -1,0 +1,5 @@
+Django==4.1.13
+Django==5.1.2
+django_environ==0.11.2
+django_storages==1.14.4
+protobuf==5.28.3

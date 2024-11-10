@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}FAQ - The Closet{% endblock %}
+
+{% block content %}
+<div class="faq-page">
+    <h1 class="faq-title">Perguntas Frequentes (FAQ)</h1>
+
+    <div class="faq-list">
+        <div class="faq-item">
+            <button class="faq-question">Como faço para rastrear meu pedido?</button>
+            <div class="faq-answer">
+                <p>Após o envio do seu pedido, você receberá um e-mail com o código de rastreamento. Você pode usar este código em nossa página de rastreamento ou diretamente no site da transportadora para acompanhar o status da entrega.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question">Qual é a política de trocas e devoluções?</button>
+            <div class="faq-answer">
+                <p>Aceitamos trocas e devoluções em até 30 dias após a compra, desde que o produto esteja em perfeitas condições, sem uso e com todas as etiquetas originais. Para iniciar uma troca ou devolução, entre em contato com nosso atendimento ao cliente.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question">Como sei qual tamanho escolher?</button>
+            <div class="faq-answer">
+                <p>Oferecemos um guia de tamanhos detalhado para cada produto em nossa loja. Você pode encontrá-lo na página do produto, logo abaixo das opções de tamanho. Se ainda tiver dúvidas, nossa equipe de atendimento estará feliz em ajudar.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question">Quais são as formas de pagamento aceitas?</button>
+            <div class="faq-answer">
+                <p>Aceitamos cartões de crédito (Visa, MasterCard, American Express), PayPal, boleto bancário e, em algumas regiões, pagamento na entrega. Todas as transações são processadas de forma segura.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question">Quanto tempo leva para meu pedido ser entregue?</button>
+            <div class="faq-answer">
+                <p>O prazo de entrega varia de acordo com sua localização e o método de envio escolhido. Em geral, os pedidos são entregues em 3-7 dias úteis para áreas urbanas e 7-14 dias úteis para áreas rurais ou mais distantes.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question">Vocês oferecem envio internacional?</button>
+            <div class="faq-answer">
+                <p>Sim, oferecemos envio internacional para diversos países. As taxas de envio e os prazos de entrega variam de acordo com o destino. Observe que podem incidir taxas de importação, que são de responsabilidade do cliente.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // JavaScript para controlar o comportamento do dropdown
+    const faqQuestions = document.querySelectorAll('.faq-question');
+
+    faqQuestions.forEach(question => {
+        question.addEventListener('click', () => {
+            const answer = question.nextElementSibling;
+            const isOpen = answer.style.maxHeight;
+
+            // Fechar todas as respostas
+            document.querySelectorAll('.faq-answer').forEach(a => {
+                a.style.maxHeight = null;
+            });
+
+            // Abrir a resposta clicada se estava fechada
+            if (!isOpen) {
+                answer.style.maxHeight = answer.scrollHeight + "px";
+            }
+        });
+    });
+</script>
+{% endblock %}

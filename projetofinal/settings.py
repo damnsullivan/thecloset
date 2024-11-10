@@ -49,6 +49,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'cart.context_processors.cart_count', 
             ],
         },
     },
@@ -121,3 +122,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Environment variables
 env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+SESSION_COOKIE_AGE = 3600
+
+

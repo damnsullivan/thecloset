@@ -4,7 +4,6 @@ from django.conf import settings
 from storages.backends.gcloud import GoogleCloudStorage
 from django.utils.text import slugify
 
-
 gcs = GoogleCloudStorage()
 
 class Category(models.Model):
@@ -20,22 +19,42 @@ class Category(models.Model):
     def get_absolute_url(self):
         return reverse('category_detail', args=[self.slug])
 
-class Product(models.Model):
+class Size(models.Model):
     SIZES = [
         ('XS', 'PP'),
         ('S', 'P'),
         ('M', 'M'),
         ('L', 'G'),
-        ('XL', 'GG')
+        ('XL', 'GG'),
+        ('34', '34'),
+        ('35', '35'),
+        ('36', '36'),
+        ('37', '37'),
+        ('38', '38'),
+        ('39', '39'),
+        ('40', '40'),
+        ('41', '41'),
+        ('42', '42'),
+        ('43', '43'),
+        ('44', '44')
     ]
+    name = models.CharField(max_length=3, choices=SIZES, unique=True)
 
+    def __str__(self):
+        return self.get_name_display()
+
+class Product(models.Model):
     COLORS = [
         ('Red', 'Vermelho'),
         ('Blue', 'Azul'),
         ('Green', 'Verde'),
         ('Black', 'Preto'),
         ('White', 'Branco'),
-        ('Yellow', 'Amarelo')
+        ('Yellow', 'Amarelo'),
+        ('Grey', 'Cinza'),
+        ('Orange', 'Laranja'),
+        ('Pink', 'Rosa'),
+        ('Purple', 'Roxo')
     ]
 
     STARS = [
@@ -62,11 +81,11 @@ class Product(models.Model):
     available = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    size = models.CharField(max_length=2, choices=SIZES, default='M')
+    sizes = models.ManyToManyField(Size, related_name='products', blank=True)
     color = models.CharField(max_length=10, choices=COLORS, default='Black')
     rating = models.PositiveSmallIntegerField(choices=STARS, default=3)
     brand = models.CharField(max_length=100, blank=True, null=True)
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES,default='U')
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default='U')
 
     class Meta:
         ordering = ['-created']
@@ -76,6 +95,9 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         return reverse('product_detail', args=[self.slug])
+   
+    def get_available_sizes(self):
+        return self.sizes.all()
 
     @property
     def is_in_stock(self):
