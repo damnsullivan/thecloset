@@ -1,0 +1,16 @@
+Nome: Danny Sullivan Cardoso da Silva
+Título: Diretrizes para construção de website de vestuário para otimizar a experiência do usuário
+Resumo: O objetivo deste trabalho é propor diretrizes para o desenvolvimento de websites de vestuário,
+visando otimizar a experiência do usuário (UX). Utilizando métodos de avaliação de
+usabilidade, como Tree Testing e Escala SUS, identificaram-se pontos críticos e propuseram-
+se melhorias na arquitetura da informação e interface de um e-commerce. O estudo revelou
+dificuldades em tarefas como encontrar produtos e finalizar compras, indicando a necessidade
+de navegação intuitiva e checkout simplificado. Wireframes e um protótipo, desenvolvido com
+o framework Django, permitiram a aplicação prática das diretrizes. A avaliação heurística,
+baseada nas Heurísticas de Nielsen, e a integração com Google Cloud Storage e Django Admin
+demonstraram a viabilidade de uma plataforma robusta, segura e escalável. Este trabalho
+contribui para a área de TI ao fornecer diretrizes para o desenvolvimento de e-commerces de
+vestuário, visando a melhoria da satisfação e retenção de usuários, além de fortalecer a
+competitividade no mercado digital.
+Orientador: Prof. Dra. Eliana Alves Moreira
+Mês/Ano: Dezembro de 2024
