@@ -7,7 +7,6 @@ def product_list(request):
     products = Product.objects.filter(available=True)
     categories = Category.objects.all()
 
-    # Filtros
     category = request.GET.get('category')
     gender = request.GET.get('gender')
     price_min = request.GET.get('price_min')
@@ -16,7 +15,6 @@ def product_list(request):
     query = request.GET.get('q')
     sort = request.GET.get('sort', 'name')
 
-    # Aplicar filtros
     if category:
         category_obj = get_object_or_404(Category, slug=category)
         products = products.filter(category=category_obj)
@@ -49,7 +47,6 @@ def product_list(request):
             Q(brand__icontains=query)
         )
     
-    # Ordenação
     if sort == 'price_asc':
         products = products.order_by('price')
     elif sort == 'price_desc':
@@ -59,8 +56,7 @@ def product_list(request):
     elif sort == 'rating':
         products = products.order_by('-rating')
     
-    # Paginação
-    paginator = Paginator(products, 12)  # 12 produtos por página
+    paginator = Paginator(products, 12)  
     page = request.GET.get('page')
     try:
         products = paginator.page(page)

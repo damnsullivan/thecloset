@@ -38,8 +38,7 @@ def add_to_cart(request, product_slug):
     if not created:
         cart_item.quantity += 1
         cart_item.save()
-    
-    # Atualizar a contagem do carrinho na sessão
+
     request.session['cart_count'] = CartItem.objects.filter(user=request.user).aggregate(total=Sum('quantity'))['total'] or 0 if request.user.is_authenticated else CartItem.objects.filter(session_id=session_key).aggregate(total=Sum('quantity'))['total'] or 0
     
     return redirect('view_cart')
@@ -54,7 +53,6 @@ def remove_from_cart(request, item_id):
         if cart_item.session_id == session_key:
             cart_item.delete()
     
-    # Atualizar a contagem do carrinho na sessão
     request.session['cart_count'] = CartItem.objects.filter(user=request.user).aggregate(total=Sum('quantity'))['total'] or 0 if request.user.is_authenticated else CartItem.objects.filter(session_id=session_key).aggregate(total=Sum('quantity'))['total'] or 0
     
     return redirect('view_cart')
@@ -68,7 +66,6 @@ def update_cart(request, item_id):
     else:
         cart_item.delete()
     
-    # Atualizar a contagem do carrinho na sessão
     if request.user.is_authenticated:
         request.session['cart_count'] = CartItem.objects.filter(user=request.user).aggregate(total=Sum('quantity'))['total'] or 0
     else:

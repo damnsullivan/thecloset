@@ -52,7 +52,6 @@
 </div>
 
 <script>
-    // JavaScript para controlar o comportamento do dropdown
     const faqQuestions = document.querySelectorAll('.faq-question');
 
     faqQuestions.forEach(question => {
@@ -60,12 +59,10 @@
             const answer = question.nextElementSibling;
             const isOpen = answer.style.maxHeight;
 
-            // Fechar todas as respostas
             document.querySelectorAll('.faq-answer').forEach(a => {
                 a.style.maxHeight = null;
             });
 
-            // Abrir a resposta clicada se estava fechada
             if (!isOpen) {
                 answer.style.maxHeight = answer.scrollHeight + "px";
             }

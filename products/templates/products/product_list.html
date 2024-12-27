@@ -34,7 +34,7 @@
 
     .product-image-container {
         position: relative;
-        padding-top: 100%; /* 1:1 Aspect Ratio */
+        padding-top: 100%; 
     }
 
     .product-image {
@@ -146,7 +146,7 @@
         <h2 class="collection-title">Nossa coleção exclusiva</h2>
         
         <div class="collection-layout">
-            <!-- Sidebar de Filtros -->
+
             <aside class="filter-sidebar">
                 <div class="filter-container">
                     <h3 class="filter-title">Refinar busca</h3>
@@ -194,7 +194,6 @@
                 </div>
             </aside>
 
-            <!-- Lista de Produtos -->
             <section class="product-list">
                 <div class="product-grid">
                     {% for product in products %}
@@ -223,7 +222,6 @@
                     {% endfor %}
                 </div>
 
-                <!-- Paginação -->
                 {% if products.has_other_pages %}
                     <div class="pagination">
                         {% if products.has_previous %}
@@ -299,7 +297,6 @@
         priceMinValue.textContent = `R$ ${priceMin.value}`;
         priceMaxValue.textContent = `R$ ${priceMax.value}`;
 
-        // Garante que o preço mínimo não seja maior que o máximo
         if (parseInt(priceMin.value) > parseInt(priceMax.value)) {
             priceMin.value = priceMax.value;
             priceMinValue.textContent = `R$ ${priceMin.value}`;
@@ -308,8 +305,7 @@
 
     priceMin.addEventListener('input', updatePriceValues);
     priceMax.addEventListener('input', updatePriceValues);
-
-    // Inicializa os valores
+    
     updatePriceValues();
 </script>
 

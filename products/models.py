@@ -110,7 +110,7 @@ class Product(models.Model):
     def get_image_url(self):
         if self.image:
             return self.image.url
-        return settings.STATIC_URL + 'images/no_image.png'  # Fallback imagem
+        return settings.STATIC_URL + 'images/no_image.png'  
 
     def save(self, *args, **kwargs):
         if not self.slug:

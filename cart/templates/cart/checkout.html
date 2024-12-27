@@ -6,7 +6,6 @@
   <form method="post" class="checkout-form">
     {% csrf_token %}
 
-    <!-- Endereço de Entrega -->
     <section class="checkout-section checkout-address">
       <h3 class="checkout-section-title">Endereço de Entrega</h3>
       <div class="checkout-address-fields">
@@ -75,7 +74,6 @@
       </div>
     </section>
 
-    <!-- Formas de Pagamento -->
     <section class="checkout-section checkout-payment">
         <h3 class="checkout-section-title">Formas de Pagamento</h3>
         <div class="checkout-payment-options">
@@ -97,7 +95,6 @@
             </div>
         </div>
 
-        <!-- Campos do Cartão (inicialmente ocultos) -->
         <div id="card-fields" class="checkout-card-fields hidden">
             <div class="checkout-form-group">
                 <label for="card-number" class="checkout-label">Número do Cartão</label>
@@ -120,13 +117,11 @@
             <div id="installments-section" class="checkout-installments hidden">
                 <label for="installments" class="checkout-label">Parcelas</label>
                 <select id="installments" name="installments" class="checkout-select">
-                    <!-- Parcelas serão preenchidas dinamicamente -->
                 </select>
             </div>
         </div>
     </section>
 
-    <!-- Resumo do Pedido -->
     <section class="checkout-section checkout-summary">
       <h3 class="checkout-section-title">Resumo do Pedido</h3>
       <ul class="checkout-summary-list">
@@ -145,7 +140,6 @@
       </div>
     </section>
 
-    <!-- Botão Finalizar Compra -->
     <div class="checkout-submit">
       <button type="submit" class="checkout-button checkout-button-primary">
         Finalizar Compra
@@ -154,7 +148,6 @@
   </form>
 </div>
 
-<!-- API de Busca de CEP -->
 <script>
   document.getElementById("search-cep").addEventListener("click", function () {
     const cep = document.getElementById("cep").value;
@@ -181,9 +174,8 @@
         const total = parseFloat(totalString);
 
         const installmentsSelect = document.getElementById('installments');
-        installmentsSelect.innerHTML = ''; // Limpa as opções
+        installmentsSelect.innerHTML = '';
 
-        // Adiciona as opções de parcelas
         for (let i = 1; i <= 6; i++) {
             const installmentValue = (total / i).toFixed(2);
             const option = document.createElement('option');
@@ -220,8 +212,6 @@
         if (value.length > 2) value = value.slice(0, 2) + '/' + value.slice(2);
         e.target.value = value;
     });
-
-       // Limitação do CVV para apenas números
        document.getElementById('card-cvv').addEventListener('input', function (e) {
         e.target.value = e.target.value.replace(/\D/g, '');
     });

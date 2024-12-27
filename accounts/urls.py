@@ -7,8 +7,6 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
     path('register/', views.register, name='register'),
     path('profile/', views.user_profile, name='user_profile'),
-
-    # URLs para redefinição de senha
     path('password_reset/', views.custom_password_reset, name='password_reset'),
     path('verify_reset_code/', views.verify_reset_code, name='verify_reset_code'),
     path('password_reset_confirm/', views.password_reset_confirm, name='password_reset_confirm'),

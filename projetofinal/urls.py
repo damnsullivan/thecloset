@@ -13,6 +13,5 @@ urlpatterns = [
     path('search/', views.search_results, name='search_results'),
 ]
 
-# Adicione isso se você estiver usando o servidor de desenvolvimento do Django para servir arquivos de mídia
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
